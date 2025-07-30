@@ -1,0 +1,73 @@
+version: 2
+
+models:
+  - name: stg_telegram_messages
+    description: "Staging model for cleaned telegram messages"
+    columns:
+      - name: message_id
+        description: "Primary key for the message"
+        tests:
+          - unique
+          - not_null
+      - name: channel_name
+        description: "Name of the telegram channel"
+      - name: has_image
+        description: "Whether the message contains an image"
+      - name: message_length
+        description: "Length of the message text"
+
+  - name: dim_channels
+    description: "Dimension table for telegram channels"
+    columns:
+      - name: channel_id
+        description: "Primary key for the channel"
+        tests:
+          - unique
+          - not_null
+      - name: channel_name
+        description: "Name of the telegram channel"
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_dates
+    description: "Dimension table for dates"
+    columns:
+      - name: date_key
+        description: "Primary key for the date"
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_messages
+    description: "Fact table for messages with foreign keys to dimensions"
+    columns:
+      - name: message_id
+        description: "Primary key for the message"
+        tests:
+          - unique
+          - not_null
+      - name: channel_id
+        description: "Foreign key to dim_channels"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_channels')
+              field: channel_id
+      - name: date_key
+        description: "Foreign key to dim_dates"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_dates')
+              field: date_key
+
+tests:
+  - name: no_future_dates
+    description: "Ensure no messages have future dates"
+    sql: |
+      select count(*) as count
+      from {{ ref('fct_messages') }}
+      where date_key > current_date
+    warn_if: "> 0"
+    error_if: "> 0" 

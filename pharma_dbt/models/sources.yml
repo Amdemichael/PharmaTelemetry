@@ -1,0 +1,45 @@
+version: 2
+
+sources:
+  - name: raw
+    database: pharmadb
+    schema: raw
+    tables:
+      - name: telegram_messages
+        description: "Raw telegram messages from scraping"
+        columns:
+          - name: id
+            description: "Primary key"
+            tests:
+              - unique
+              - not_null
+          - name: channel_name
+            description: "Name of the telegram channel"
+          - name: date_scraped
+            description: "Date when the data was scraped"
+          - name: message_data
+            description: "Raw JSON message data from Telegram API"
+          - name: created_at
+            description: "Timestamp when record was created"
+      - name: image_detections
+        description: "Raw YOLO object detection results"
+        columns:
+          - name: id
+            description: "Primary key"
+            tests:
+              - unique
+              - not_null
+          - name: message_id
+            description: "Message ID from Telegram"
+          - name: detected_object_class
+            description: "Class of detected object"
+          - name: confidence_score
+            description: "Confidence score of detection"
+          - name: image_path
+            description: "Path to the processed image"
+          - name: channel_name
+            description: "Name of the telegram channel"
+          - name: message_date
+            description: "Date of the message"
+          - name: created_at
+            description: "Timestamp when record was created" 

@@ -6,7 +6,11 @@ dbt-postgres
 ultralytics
 fastapi
 uvicorn
+httpx
 dagster
 dagster-webserver
 pytest
-flake8 
+flake8
+pandas
+matplotlib
+nest_asyncio
